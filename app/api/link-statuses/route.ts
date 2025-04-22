@@ -46,6 +46,15 @@ async function getLinkStatuses(urls: Array<string>) {
   return linkStatuses;
 }
 
+function getLinkUrlsFromDom(dom: JSDOM) {
+  const likelyExternalLinks = 'a[target="_blank"][rel*=noreferrer]';
+  const links = Array.from(dom.window.document.querySelectorAll(likelyExternalLinks));
+  const linkUrls = links.map(link => link.getAttribute('href') ?? '');
+  const deduplicatedUrls = Array.from(new Set(linkUrls));
+  
+  return deduplicatedUrls;
+}
+
 type CacheData = {
   lastUpdatedTimestampInMs: number,
   linkStatuses: Array<LinkStatus>,
@@ -77,8 +86,7 @@ export async function GET(request: NextRequest) {
   const showcase = await curl('https://www.squarespace.com/showcase');
   if (!showcase.html) { return; }
   const dom = new JSDOM(showcase.html);
-  const links = Array.from(dom.window.document.querySelectorAll('.category-websites__website--link a'));
-  const linkUrls = links.map(link => link.getAttribute('href') ?? '');
+  const linkUrls = getLinkUrlsFromDom(dom);
   const linkStatuses = await getLinkStatuses(linkUrls);
   const lastUpdatedTimestampInMs = Date.now();
   const linkStatusData = { lastUpdatedTimestampInMs, linkStatuses };
