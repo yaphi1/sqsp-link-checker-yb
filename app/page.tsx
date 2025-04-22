@@ -1,56 +1,87 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styles from "./page.module.css";
 import { LinkStatus } from './types';
 
 export default function Home() {
   const [linkStatuses, setLinkStatuses] = useState<Array<LinkStatus>>();
   const [lastChecked, setLastChecked] = useState<number>();
-  useEffect(() => {
-    (async () => {
-      const response: {
-        linkStatuses: Array<LinkStatus>
-      } = await fetch('/api/link-statuses').then(res => res.json());
+  const [isLoading, setIsLoading] = useState(true);
 
-      setLinkStatuses(response.linkStatuses);
-      setLastChecked(Date.now());
-    })();
+  const getLinkStatuses = useCallback(async ({ useCache } : { useCache: boolean; }) => {
+    setIsLoading(true);
+    const response: {
+      lastUpdatedTimestampInMs: number;
+      linkStatuses: Array<LinkStatus>
+    } = await fetch(`/api/link-statuses${useCache ? '' : '?bustCache'}`).then(res => res.json());
+
+    setLinkStatuses(response.linkStatuses);
+    setLastChecked(response.lastUpdatedTimestampInMs);
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    getLinkStatuses({ useCache: true });
+  }, [getLinkStatuses]);
 
   return (
     <div className={styles.page}>
       <h1>Which showcased sites are currently on Squarespace?</h1>
       <div style={{
-        padding: '20px 4px',
+        maxWidth: '900px',
       }}>
-        <div>
-          Showcase location: <a href="https://www.squarespace.com/showcase" target="_blank">https://www.squarespace.com/showcase</a>
-        </div>
-        {lastChecked && (
-          <div style={{
-            paddingTop: '8px',
-          }}>
-            Last checked: {new Date(lastChecked).toString()}
-          </div>
-        )}
-      </div>
-      {linkStatuses?.map(linkStatus => (
-        <div key={linkStatus.url} style={{
+        <div style={{
+          padding: '20px 4px',
           display: 'flex',
           justifyContent: 'space-between',
-          maxWidth: '800px',
-          gap: '40px',
-          padding: '4px',
-          backgroundColor: linkStatus.isSquarespaceSite ? 'transparent' : '#fdd',
-          fontWeight: linkStatus.isSquarespaceSite ? 'normal' : 'bold',
         }}>
-          <div>{linkStatus.url}</div>
-          <div>{linkStatus.isSquarespaceSite ? 'Yes' : 'No'}</div>
+          <div>
+            <div>
+              <b>Showcase location:</b> <a href="https://www.squarespace.com/showcase" target="_blank">https://www.squarespace.com/showcase</a>
+            </div>
+            {lastChecked && (
+              <div style={{
+                paddingTop: '8px',
+              }}>
+                <b>Last checked:</b> {new Date(lastChecked).toString()}
+                
+              </div>
+            )}
+          </div>
+          <div>
+            <button
+              className={styles.buttonPrimary}
+              onClick={() => {
+                getLinkStatuses({ useCache: false });
+              }}
+            >
+              Check Again
+            </button>
+          </div>
         </div>
-      )) || (
-        <div style={{ padding: '4px' }}>Loading...</div>
-      )}
+        {!isLoading && linkStatuses?.map(linkStatus => (
+          <div key={linkStatus.url} style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '40px',
+            padding: '4px',
+            backgroundColor: linkStatus.isSquarespaceSite ? 'transparent' : '#fdd',
+            fontWeight: linkStatus.isSquarespaceSite ? 'normal' : 'bold',
+          }}>
+            <a
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className={styles.pageLink}
+            >
+              {linkStatus.url}
+            </a>
+            <div>{linkStatus.isSquarespaceSite ? 'Yes' : 'No'}</div>
+          </div>
+        )) || (
+          <div style={{ padding: '4px' }}>Loading...</div>
+        )}
+      </div>
     </div>
   );
 }

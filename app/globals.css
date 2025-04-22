@@ -3,3 +3,10 @@
   padding: 0;
   margin: 0;
 }
+
+a {
+  color: rgb(0, 105, 180);
+}
+a:hover {
+  background-color: rgb(255, 227, 125);
+}
