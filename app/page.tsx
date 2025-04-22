@@ -70,9 +70,9 @@ export default function Home() {
             fontWeight: linkStatus.isSquarespaceSite ? 'normal' : 'bold',
           }}>
             <a
+              href={linkStatus.url}
               target="_blank"
               rel="nofollow noopener noreferrer"
-              className={styles.pageLink}
             >
               {linkStatus.url}
             </a>

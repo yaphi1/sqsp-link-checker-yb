@@ -1,22 +1,23 @@
 import { CurlResult, LinkStatus } from '@/app/types';
+import { validateUrl } from '@the-node-forge/url-validator';
 import { exec } from 'child_process';
 import { JSDOM } from 'jsdom';
 import { NextRequest } from 'next/server';
 
 async function curl(url: string) {
   return new Promise<CurlResult>((resolve) => {
+    const isUrlValid = validateUrl(url);
+    if (!isUrlValid) {
+      console.error('Invalid url:', url);
+      resolve({ url: '', html: null });
+    }
+
     exec(`curl -sL ${url}`, (error, stdout, stderr) => {
       if (error || stderr) {
-        console.log({ error, stderr });
-        resolve({
-          url,
-          html: null,
-        });
+        console.error({ error, stderr });
+        resolve({ url, html: null });
       }
-      resolve({
-        url,
-        html: stdout,
-      });
+      resolve({ url, html: stdout });
     });
   });
 }
