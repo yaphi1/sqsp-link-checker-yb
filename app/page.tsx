@@ -79,8 +79,24 @@ export default function Home() {
             <div>{linkStatus.isSquarespaceSite ? 'Yes' : 'No'}</div>
           </div>
         )) || (
-          <div style={{ padding: '4px' }}>Loading...</div>
+          <Loader />
         )}
+      </div>
+    </div>
+  );
+}
+
+function Loader() {
+  return (
+    <div style={{ padding: '4px' }}>
+      <div className={styles.loading}>
+        Checking showcase...
+      </div>
+      <div className={`${styles.loading} ${styles.loading_1}`}>
+        Retrieving customer site links...
+      </div>
+      <div className={`${styles.loading} ${styles.loading_2}`}>
+        Validating customer sites...
       </div>
     </div>
   );
