@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: "Sqsp Link Checker",
@@ -15,8 +16,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <nav>
-          <a href="/">Home</a>
-          <a href="/paste-your-own">Paste Your Own Links</a>
+          <Link href="/">Home</Link>
+          <Link href="/paste-your-own">Paste Your Own Links</Link>
         </nav>
         {children}
       </body>
