@@ -36,7 +36,7 @@ export default function PasteYourOwn() {
           marginBottom: '20px',
         }}
       >
-        Paste your own links
+        Check if sites are on Squarespace
       </h1>
       <div style={{
         maxWidth: '900px',
@@ -46,23 +46,26 @@ export default function PasteYourOwn() {
             marginBottom: '20px',
           }}
         >
-          <label>
-            <b>Enter links here:</b>
-            <div>
+          <label style={{
+            maxWidth: '900px',
+          }}>
+            <b>Enter URLs below:</b>
+            <div style={{
+              color: '#555',
+              fontSize: '16px',
+            }}>
               URLs can be separated by commas, spaces, or newlines.
             </div>
             <textarea
               name="linkTextArea"
               className={styles.urlTextArea}
-              style={{
-                fontSize: '20px',
-                margin: '10px 0px',
-              }}
             >
             </textarea>
           </label>
           <div>
-            <button type="submit" className={styles.buttonPrimary}>Submit</button>
+            <button type="submit" className={styles.buttonPrimary}>
+              Check Sites
+            </button>
           </div>
         </form>
         {!isLoading && linkStatuses?.map(linkStatus => (
