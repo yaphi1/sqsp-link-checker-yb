@@ -5,7 +5,6 @@
 
 .buttonPrimary {
   padding: 10px 20px;
-  margin-left: 10px;
   cursor: pointer;
   font-size: 20px;
   border-radius: 4px;
@@ -33,4 +32,9 @@
   100% {
     opacity: 1;
   }
+}
+.urlTextArea {
+  width: 600px;
+  min-height: 200px;
+  max-width: 100%;
 }

@@ -95,3 +95,32 @@ export async function GET(request: NextRequest) {
 
   return Response.json(linkStatusData);
 }
+
+export async function POST(request: NextRequest) {
+  const rawText = await request.text();
+  const linkUrls = formatLinkUrls(rawText);
+  const linkStatuses = await getLinkStatuses(linkUrls);
+  const lastUpdatedTimestampInMs = Date.now();
+  const linkStatusData = { lastUpdatedTimestampInMs, linkStatuses };
+
+  return Response.json(linkStatusData);
+}
+
+function formatLinkUrls(rawText: string) {
+  const list = convertTextToList(rawText);
+  const filteredList = list.filter(validateUrl);
+
+  return filteredList;
+}
+
+function convertTextToList(rawText: string) {
+  const spacesAndLineBreaks = /\s+/g;
+  const duplicateCommas = /,{2,}/g;
+
+  const list = rawText.trim()
+    .replace(spacesAndLineBreaks, ',')
+    .replace(duplicateCommas, ',')
+    .split(',');
+
+  return list;
+}

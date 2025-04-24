@@ -14,6 +14,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/paste-your-own">Paste Your Own Links</a>
+        </nav>
         {children}
       </body>
     </html>
