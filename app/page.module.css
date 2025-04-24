@@ -15,24 +15,7 @@
 .buttonPrimary:hover {
   background-color: #0098db;
 }
-.loading {
-  opacity: 0;
-  animation: loading 1s ease 0s 1 forwards;
-}
-.loading_1 {
-  animation-delay: 2s;
-}
-.loading_2 {
-  animation-delay: 4s;
-}
-@keyframes loading {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
+
 .urlTextArea {
   width: 100%;
   min-height: 200px;

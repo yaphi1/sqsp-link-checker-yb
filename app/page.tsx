@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import styles from "./page.module.css";
 import { LinkStatus } from './types';
+import { Loader } from './Loader';
 
 export default function Home() {
   const [linkStatuses, setLinkStatuses] = useState<Array<LinkStatus>>();
@@ -79,24 +80,14 @@ export default function Home() {
             <div>{linkStatus.isSquarespaceSite ? 'Yes' : 'No'}</div>
           </div>
         )) || (
-          <Loader />
+          <Loader
+            phrases={[
+              'Checking showcase...',
+              'Retrieving customer site links...',
+              'Validating customer sites...',
+            ]}
+          />
         )}
-      </div>
-    </div>
-  );
-}
-
-function Loader() {
-  return (
-    <div style={{ padding: '4px' }}>
-      <div className={styles.loading}>
-        Checking showcase...
-      </div>
-      <div className={`${styles.loading} ${styles.loading_1}`}>
-        Retrieving customer site links...
-      </div>
-      <div className={`${styles.loading} ${styles.loading_2}`}>
-        Validating customer sites...
       </div>
     </div>
   );

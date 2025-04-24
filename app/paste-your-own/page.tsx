@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import styles from "../page.module.css";
 import { LinkStatus } from '../types';
+import { Loader } from '../Loader';
 
 export default function PasteYourOwn() {
   const [linkStatuses, setLinkStatuses] = useState<Array<LinkStatus>>();
@@ -87,20 +88,14 @@ export default function PasteYourOwn() {
             <div>{linkStatus.isSquarespaceSite ? 'Yes' : 'No'}</div>
           </div>
         ))}
-        {isLoading && <Loader />}
-      </div>
-    </div>
-  );
-}
-
-function Loader() {
-  return (
-    <div style={{ padding: '4px' }}>
-      <div className={styles.loading}>
-        Validating pasted links...
-      </div>
-      <div className={`${styles.loading} ${styles.loading_1}`}>
-        Checking sites...
+        {isLoading && (
+          <Loader
+            phrases={[
+              'Validating pasted links...',
+              'Checking sites...',
+            ]}
+          />
+        )}
       </div>
     </div>
   );
