@@ -5,17 +5,34 @@ import styles from "./page.module.css";
 import { LinkStatus } from './types';
 import { Loader } from './Loader';
 
+const LOCAL_STORAGE_KEY = 'linkStatusData';
+
+type LinkStatusResponse = {
+  lastUpdatedTimestampInMs: number,
+  linkStatuses: Array<LinkStatus>,
+};
+
 export default function Home() {
   const [linkStatuses, setLinkStatuses] = useState<Array<LinkStatus>>();
   const [lastChecked, setLastChecked] = useState<number>();
   const [isLoading, setIsLoading] = useState(true);
 
   const getLinkStatuses = useCallback(async ({ useCache } : { useCache: boolean; }) => {
-    setIsLoading(true);
-    const response: {
-      lastUpdatedTimestampInMs: number;
-      linkStatuses: Array<LinkStatus>
-    } = await fetch(`/api/link-statuses${useCache ? '' : '?bustCache'}`).then(res => res.json());
+    let response: LinkStatusResponse = {
+      lastUpdatedTimestampInMs: 0,
+      linkStatuses: [],
+    };
+    const localResponse = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const shouldUseLocalStorage = useCache && localResponse;
+
+    if (shouldUseLocalStorage) {
+      response = JSON.parse(localResponse);
+    } else {
+      setIsLoading(true);
+      response = await fetch(`/api/link-statuses${useCache ? '' : '?bustCache'}`).then(res => res.json());
+    }
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response));
 
     setLinkStatuses(response.linkStatuses);
     setLastChecked(response.lastUpdatedTimestampInMs);
@@ -39,7 +56,11 @@ export default function Home() {
         }}>
           <div>
             <div>
-              <b>Showcase location:</b> <a href="https://www.squarespace.com/showcase" target="_blank">https://www.squarespace.com/showcase</a>
+              <b>Showcase location:</b>
+              {' '}
+              <a href="https://www.squarespace.com/showcase" target="_blank">
+                https://www.squarespace.com/showcase
+              </a>
             </div>
             {lastChecked && (
               <div style={{
